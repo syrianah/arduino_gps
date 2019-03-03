@@ -1,6 +1,6 @@
 //arduino_on-board-rocket-computer
 
-#include <Arduino.h>
+#include "Arduino.h"
 
 //Barometr:
 #include <Wire.h>
@@ -49,42 +49,41 @@ void setup_GPS();
 //SD card initialize
 void setup_SD();
 
-int main(void)
+void setup()
 {
     Serial.begin(9600);
+
     //setup
     setup_BMP280();
     setup_GPS();
     setup_SD();
+}
 
-    //loop
-    while (1)
+void loop()
+{
+    //Barometr:
+    bmp280.awaitMeasurement();
+
+    bmp280.getTemperature(temp);
+
+    bmp280.getPressure(pressure);
+
+    bmp280.getAltitude(meters,srednia);
+    altitude = (altitude * 10 + meters)/11;
+
+    bmp280.triggerMeasurement();
+
+    //GPS:
+    while (nss.available())
     {
-        //Barometr:
-      bmp280.awaitMeasurement();
-
-        bmp280.getTemperature(temp);
-
-        bmp280.getPressure(pressure);
-
-        bmp280.getAltitude(meters,srednia);
-        altitude = (altitude * 10 + meters)/11;
-
-        bmp280.triggerMeasurement();
-
-        //GPS:
-        while (nss.available())
+        gps_read = nss.read();
+        if (gps.encode(gps_read))
         {
-            gps_read = nss.read();
-            if (gps.encode(gps_read))
-            {
-                gps.get_position(&lat, &lon, &fix_age);
-            }
+            gps.get_position(&lat, &lon, &fix_age);
         }
-        //zapis na karte
-        logger(lat, lon, altitude);
     }
-
+    //zapis na karte
+    logger(lat, lon, altitude);
 }
 
 void logger(double x, double y, double z)
