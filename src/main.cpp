@@ -27,7 +27,6 @@ BMP280 bmp280;
 float pressure = 0;
 float srednia = 0;
 float temp = 0;
-float suma=0;
 float meters, altitude;
 
 //GPS:
@@ -103,11 +102,11 @@ void logger(double x, double y, double z)
 void setup_BMP280()
 {
     //Barometr:
-    Serial.print("Probe BMP280: ");
-    if (bmp280.initialize()) Serial.println("Sensor found");
+    Serial.print(F("Probe BMP280: "));
+    if (bmp280.initialize()) Serial.println(F("Sensor found"));
     else
     {
-      Serial.println("Sensor missing");
+      Serial.println(F("Sensor missing"));
       // while (1) {}
     }
 
@@ -134,22 +133,22 @@ void setup_GPS()
 
 void setup_SD()
 {
-    Serial.println("Gotowy! (1/3)");
-    Serial.println("Szukam karte... (2/3");
+    Serial.println(F("Gotowy! (1/3)"));
+    Serial.println(F("Szukam karte... (2/3"));
 
     if (!SD.begin(SD_cs))                                       //sprawdź czy nie ma karty na pinie ChipSelect 4
     {
-        Serial.println("Nie wykryto karty(ERR)");            //błąd wykrycia karty
+        Serial.println(F("Nie wykryto karty(ERR)"));            //błąd wykrycia karty
         while (1) {}                                             //przerwij program
     }
 
-    Serial.println("Karta Wykryta (3/3))");                 //Karta wykryta
+    Serial.println(F("Karta Wykryta (3/3))"));                 //Karta wykryta
 
 
     if (SD.exists("data.txt"))                               //sprawdź czy istnieje plik o nazwie 123.csv
     {
 
-        Serial.println("Plik o podanej nazwie istnieje !");
+        Serial.println(F("Plik o podanej nazwie istnieje !"));
 
     }
 
@@ -157,7 +156,7 @@ void setup_SD()
       {
 
           plik = SD.open("data.txt", FILE_WRITE);                //utwórz plik
-          Serial.println("Utworzono plik o nazwie data.txt");
+          Serial.println(F("Utworzono plik o nazwie data.txt"));
 
       }
 }
