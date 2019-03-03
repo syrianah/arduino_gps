@@ -2,12 +2,12 @@
 
 #include "Arduino.h"
 
-//Barometr:
+//BMP280 sensor:
 #include <Wire.h>
 #include "/Users/wojciechkubiak/Documents/PlatformIO/Projects/arduino_gps/lib/I2C-Sensor-Lib_iLib/src/i2c.h"
 #include "/Users/wojciechkubiak/Documents/PlatformIO/Projects/arduino_gps/lib/I2C-Sensor-Lib_iLib/src/i2c_BMP280.h"
 
-//Karta pamieci:
+//SD card:
 #include <SPI.h>
 #include <SD.h>
 
@@ -19,10 +19,10 @@
 
 #define BMP280_Probe 10
 
-//Karta pamieci:
+//SD card:
 File plik;
 
-//Barometr:
+//BMP280 sensor:
 BMP280 bmp280;
 float pressure = 0;
 float srednia = 0;
@@ -48,19 +48,21 @@ void setup_GPS();
 //SD card initialize
 void setup_SD();
 
+//setup
 void setup()
 {
     Serial.begin(9600);
 
-    //setup
+    //setup devices
     setup_BMP280();
     setup_GPS();
     setup_SD();
 }
 
+//loop
 void loop()
 {
-    //Barometr:
+    //BMP280 sensor:
     bmp280.awaitMeasurement();
 
     bmp280.getTemperature(temp);
@@ -81,7 +83,7 @@ void loop()
             gps.get_position(&lat, &lon, &fix_age);
         }
     }
-    //zapis na karte
+    //save on SD card
     logger(lat, lon, altitude);
 }
 
@@ -101,7 +103,7 @@ void logger(double x, double y, double z)
 
 void setup_BMP280()
 {
-    //Barometr:
+    //BMP280 sensor:
     Serial.print(F("Probe BMP280: "));
     if (bmp280.initialize()) Serial.println(F("Sensor found"));
     else
